@@ -8,6 +8,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.recap.ScsbConstants;
+import org.recap.matchingalgorithm.service.MatchingAlgorithmHelperService;
 import org.recap.model.jpa.MatchingBibEntity;
 import org.recap.model.jpa.MatchingMatchPointsEntity;
 import org.recap.model.search.resolver.BibValueResolver;
@@ -28,6 +29,8 @@ import org.recap.repository.jpa.MatchingMatchPointsDetailsRepository;
 import org.recap.util.CommonUtil;
 import org.recap.util.MatchingAlgorithmUtil;
 import org.recap.util.SolrQueryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.solr.core.SolrTemplate;
 
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ import java.util.concurrent.Callable;
  * Created by angelind on 4/11/16.
  */
 public class SaveMatchingBibsCallable implements Callable {
+
+    private static final Logger logger = LoggerFactory.getLogger(SaveMatchingBibsCallable.class);
 
     private MatchingMatchPointsDetailsRepository matchingMatchPointsDetailsRepository;
     private String matchCriteria;
@@ -117,6 +122,9 @@ public class SaveMatchingBibsCallable implements Callable {
                     matchingBibEntity.setTitle(bibItem.getTitleSubFieldA());
                     matchingBibEntity.setOclc(CollectionUtils.isNotEmpty(bibItem.getOclcNumber()) ? StringUtils.join(bibItem.getOclcNumber(), ",") : null);
                     matchingBibEntity.setIsbn(CollectionUtils.isNotEmpty(bibItem.getIsbn()) ? StringUtils.join(bibItem.getIsbn(), ",") : null);
+                    if (null != matchingBibEntity.getIsbn() && matchingBibEntity.getIsbn().length() > 1500) {
+                        logger.info("Bib Id : {}", bibId);
+                    }
                     matchingBibEntity.setIssn(CollectionUtils.isNotEmpty(bibItem.getIssn()) ? StringUtils.join(bibItem.getIssn(), ",") : null);
                     matchingBibEntity.setLccn(bibItem.getLccn());
                     matchingBibEntity.setMaterialType(bibItem.getLeaderMaterialType());

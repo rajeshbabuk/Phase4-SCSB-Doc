@@ -56,18 +56,18 @@ public class MatchingAlgorithmProcessor {
      *
      * @param matchingBibEntities the matching bib entities
      */
-    @Transactional
+    //@Transactional
     public void saveMatchingBibEntity(List<MatchingBibEntity> matchingBibEntities){
         try {
             logger.info("Listening and Saving the matching bib entries");
             matchingBibDetailsRepository.saveAll(matchingBibEntities);
-            matchingBibDetailsRepository.flush();
+            //matchingBibDetailsRepository.flush();
         } catch (Exception ex) {
             logger.info("Exception : {0}",ex);
             for(MatchingBibEntity matchingBibEntity : matchingBibEntities) {
                 try {
                     matchingBibDetailsRepository.save(matchingBibEntity);
-                    matchingBibDetailsRepository.flush();
+                    //matchingBibDetailsRepository.flush();
                 } catch (Exception e) {
                     logger.info("Exception for single Entity : " , e);
                     logger.info("ISBN : {}" , matchingBibEntity.getIsbn());

@@ -47,6 +47,7 @@ public class ActiveMqQueuesInfo {
                 String searchUrl = String.format(activemqUrl + activeMqApiUrl + "%s" + searchAttribute, queueName);
                 ResponseEntity<String> response = new RestTemplate().exchange(searchUrl, HttpMethod.GET, stringHttpEntity, String.class);
                 QueueSizeInfoJson queueInfo = new ObjectMapper().readValue(response.getBody(), QueueSizeInfoJson.class);
+                logger.info("Queues Info : {}", queueInfo.getValue());
                 queueSizeCount = Integer.valueOf(queueInfo.getValue());
                 break;
             } catch (ResourceAccessException e) {
