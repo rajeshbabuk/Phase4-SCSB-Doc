@@ -123,7 +123,7 @@ public class SaveMatchingBibsCallable implements Callable {
                     matchingBibEntity.setOclc(CollectionUtils.isNotEmpty(bibItem.getOclcNumber()) ? StringUtils.join(bibItem.getOclcNumber(), ",") : null);
                     matchingBibEntity.setIsbn(CollectionUtils.isNotEmpty(bibItem.getIsbn()) ? StringUtils.join(bibItem.getIsbn(), ",") : null);
                     if (null != matchingBibEntity.getIsbn() && matchingBibEntity.getIsbn().length() > 1500) {
-                        logger.info("Bib Id : {}", bibId);
+                        logger.info("Bib Id : {}, Length of ISBN: {}", bibId, matchingBibEntity.getIsbn().length());
                     }
                     matchingBibEntity.setIssn(CollectionUtils.isNotEmpty(bibItem.getIssn()) ? StringUtils.join(bibItem.getIssn(), ",") : null);
                     matchingBibEntity.setLccn(bibItem.getLccn());
