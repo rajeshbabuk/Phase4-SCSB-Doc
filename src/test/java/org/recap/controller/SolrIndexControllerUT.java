@@ -1,8 +1,8 @@
 package org.recap.controller;
 
 import org.apache.solr.client.solrj.SolrServerException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,9 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by premkb on 2/8/16.
@@ -81,7 +81,7 @@ public class SolrIndexControllerUT extends BaseTestCaseUT {
     @Mock
     CommonUtil commonUtil;
 
-    @Before
+    @BeforeEach
     public void setUp()throws Exception {
         MockitoAnnotations.initMocks(this);
     }

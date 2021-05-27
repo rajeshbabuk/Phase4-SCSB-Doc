@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.matchingalgorithm.MatchingAlgorithmCGDProcessor;
 import org.recap.model.jpa.BibliographicEntity;
@@ -34,7 +35,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by hemalathas on 5/7/17.
  */
-public class MatchingAlgorithmMonographCGDCallableUT extends BaseTestCaseUT {
+public class MatchingAlgorithmMonographCGDCallableUT extends BaseTestCaseUT4 {
 
     @Mock
     private ReportDataDetailsRepository reportDataDetailsRepository;

@@ -1,6 +1,6 @@
 package org.recap.model.search.resolver.impl.bib;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.solr.BibItem;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by Anithav on 16/06/20.

@@ -21,6 +21,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.jpa.DeaccessionItemChangeLog;
@@ -49,7 +50,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
-public class ReportsServiceUtilUT extends BaseTestCaseUT {
+public class ReportsServiceUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     ReportsServiceUtil reportsServiceUtil;
@@ -69,8 +70,8 @@ public class ReportsServiceUtilUT extends BaseTestCaseUT {
     @Before
     public void setup()throws Exception{
         MockitoAnnotations.initMocks(this);
-        Mockito.when(dateUtil.getFromDate(Mockito.any())).thenReturn(new Date());
-        Mockito.when(dateUtil.getToDate(Mockito.any())).thenReturn(new Date());
+        Mockito.when(dateUtil.getFromDateAccession(Mockito.any())).thenCallRealMethod();
+        Mockito.when(dateUtil.getToDateAccession(Mockito.any())).thenCallRealMethod();
     }
 
     @Test

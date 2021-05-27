@@ -1,6 +1,6 @@
 package org.recap.model.jaxb;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.recap.BaseTestCaseUT;
 
@@ -10,7 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JAXBHandlerUT extends BaseTestCaseUT {
 

@@ -16,6 +16,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.search.SearchRecordsRequest;
@@ -45,7 +46,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-public class BibSolrDocumentRepositoryImplUT extends BaseTestCaseUT {
+public class BibSolrDocumentRepositoryImplUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     BibSolrDocumentRepositoryImpl bibSolrDocumentRepository;

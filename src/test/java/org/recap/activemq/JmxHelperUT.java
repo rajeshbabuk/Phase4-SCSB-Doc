@@ -1,14 +1,14 @@
 package org.recap.activemq;
 
 import org.apache.activemq.broker.jmx.DestinationViewMBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.recap.camel.activemq.JmxHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.management.MBeanServerConnection;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 public class JmxHelperUT {

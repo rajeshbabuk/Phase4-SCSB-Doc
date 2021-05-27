@@ -8,7 +8,7 @@ import org.apache.camel.InvalidPayloadException;
 import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.spi.UnitOfWork;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by sudhishk on 19/1/17.

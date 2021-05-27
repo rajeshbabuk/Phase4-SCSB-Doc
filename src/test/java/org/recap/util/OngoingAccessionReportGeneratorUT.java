@@ -1,6 +1,6 @@
 package org.recap.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Created by hemalathas on 22/2/17.

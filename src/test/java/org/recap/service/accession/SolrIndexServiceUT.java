@@ -18,6 +18,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.InstitutionEntity;
@@ -49,7 +50,7 @@ import static org.junit.Assert.assertNotNull;
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*"})
-public class SolrIndexServiceUT extends BaseTestCaseUT {
+public class SolrIndexServiceUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     SolrIndexService solrIndexService;

@@ -1,6 +1,6 @@
 package org.recap.model.search;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.solr.BibItem;
 import org.recap.model.solr.Item;
@@ -9,7 +9,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by premkb on 2/8/16.
@@ -55,7 +56,7 @@ public class SearchResultRowUT {
         assertNotNull(searchRecordsRequest.getSearchResultRows());
         assertNotNull(searchRecordsRequest.getSearchResultRows().get(0));
 
-        assertNotNull("1",searchRecordsRequest.getSearchResultRows().get(0).getBibId());
+        assertEquals(1,searchRecordsRequest.getSearchResultRows().get(0).getBibId());
         assertNotNull("Title1",searchRecordsRequest.getSearchResultRows().get(0).getTitle());
         assertNotNull("Author1",searchRecordsRequest.getSearchResultRows().get(0).getAuthor());
         assertNotNull("BC234",searchRecordsRequest.getSearchResultRows().get(0).getBarcode());

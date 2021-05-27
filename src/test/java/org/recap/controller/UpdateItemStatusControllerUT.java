@@ -1,8 +1,8 @@
 package org.recap.controller;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by hemalathas on 25/1/17.
@@ -42,7 +42,7 @@ public class UpdateItemStatusControllerUT extends BaseTestCaseUT {
     @Mock
     UpdateCgdUtil updateCgdUtil;
 
-    @Before
+    @BeforeEach
     public void setup()throws Exception{
         MockitoAnnotations.initMocks(this);
     }

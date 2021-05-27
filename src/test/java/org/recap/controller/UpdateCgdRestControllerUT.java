@@ -1,6 +1,6 @@
 package org.recap.controller;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -8,8 +8,8 @@ import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
 import org.recap.util.UpdateCgdUtil;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Created by rajeshbabuk on 3/1/17.

@@ -18,6 +18,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
@@ -47,7 +48,7 @@ import static junit.framework.TestCase.assertNotNull;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SolrTemplate.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*"})
-public class BibJSONUtilUT extends BaseTestCaseUT {
+public class BibJSONUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     BibJSONUtil bibJSONUtil;

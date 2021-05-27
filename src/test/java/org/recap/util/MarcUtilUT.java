@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.model.jaxb.marc.BibRecords;
 import org.recap.model.jaxb.marc.DataFieldType;
 import org.recap.model.jaxb.marc.RecordType;
@@ -42,7 +43,7 @@ import static org.junit.Assert.assertTrue;
  * Created by pvsubrah on 6/15/16.
  */
 
-public class MarcUtilUT extends BaseTestCaseUT {
+public class MarcUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     MarcUtil marcUtil;

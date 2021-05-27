@@ -1,13 +1,11 @@
 package org.recap.executors;
 
 import org.apache.camel.ProducerTemplate;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.recap.BaseTestCase;
 import org.recap.BaseTestCaseUT;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
@@ -15,15 +13,12 @@ import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.HoldingsDetailsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -32,8 +27,8 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by hemalathas on 5/7/17.
@@ -52,21 +47,19 @@ public class MatchingBibItemIndexCallableUT extends BaseTestCaseUT {
     private ProducerTemplate producerTemplate;
     @Mock
     private SolrTemplate solrTemplate;
-    private String operationType;
-    private Date from;
-    private Date to;
+    private String operationType="OngoingMatchingAlgorithm";
+    private Date from=new Date();
+    private Date to=new Date();
 
     BibliographicEntity bibliographicEntity = null;
     @Mock
     MatchingBibItemIndexExecutorService matchingBibItemIndexExecutorService;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         bibliographicEntity = saveBibSingleHoldingsSingleItem();
-        Mockito.when(mockedBibliographicDetailsRepository.getBibliographicEntitiesForChangedItems(PageRequest.of(pageNum, docsPerPage), operationType, from, to)).thenReturn(getBibliographicPagableObject(Arrays.asList(bibliographicEntity)));
-        Mockito.when(mockedBibliographicDetailsRepository.getCountOfBibliographicEntitiesForChangedItems(operationType, from, to)).thenReturn(Long.valueOf(1));
     }
 
     @Test
@@ -79,6 +72,7 @@ public class MatchingBibItemIndexCallableUT extends BaseTestCaseUT {
 
     @Test
     public void testTotalDocument(){
+        Mockito.when(mockedBibliographicDetailsRepository.getCountOfBibliographicEntitiesForChangedItems(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(Long.valueOf(1));
         MatchingBibItemIndexExecutorService matchingBibItemIndexExecutorService = new MatchingBibItemIndexExecutorService();
         matchingBibItemIndexExecutorService.setBibliographicDetailsRepository(mockedBibliographicDetailsRepository);
         int bibCountForChangedItems = matchingBibItemIndexExecutorService.getTotalDocCount(operationType, from, to);

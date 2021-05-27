@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.PropertyKeyConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
@@ -38,7 +39,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by angelind on 10/11/16.
  */
-public class DeAccessSolrDocumentServiceUT extends BaseTestCaseUT {
+public class DeAccessSolrDocumentServiceUT extends BaseTestCaseUT4 {
 
     @Mock
     DeAccessSolrDocumentService deAccessSolrDocumentService;

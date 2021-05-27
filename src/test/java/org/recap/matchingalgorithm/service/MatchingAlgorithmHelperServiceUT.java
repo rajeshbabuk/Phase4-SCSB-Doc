@@ -1,8 +1,8 @@
 package org.recap.matchingalgorithm.service;
 
 import org.apache.camel.ProducerTemplate;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -12,9 +12,11 @@ import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.jpa.MatchingBibEntity;
 import org.recap.model.jpa.MatchingMatchPointsEntity;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.MatchingBibDetailsRepository;
 import org.recap.repository.jpa.MatchingMatchPointsDetailsRepository;
 import org.recap.service.ActiveMqQueuesInfo;
+import org.recap.util.CommonUtil;
 import org.recap.util.MatchingAlgorithmUtil;
 import org.recap.util.SolrQueryBuilder;
 import org.slf4j.Logger;
@@ -35,9 +37,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * Created by premkb on 3/8/16.
@@ -74,10 +76,16 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
     @Mock
     private ProducerTemplate producerTemplate;
 
-    @Before
+
+    @Mock
+    CommonUtil commonUtil;
+
+    @Mock
+    InstitutionDetailsRepository institutionDetailsRepository;
+
+    @BeforeEach
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        Mockito.when(matchingAlgoHelperService.getLogger()).thenCallRealMethod();
     }
 
     private MatchingMatchPointsEntity getMatchingMatchPointEntity() {
@@ -111,8 +119,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
     public void findMatchingAndPopulateMatchPointsEntities() throws Exception {
         List<MatchingMatchPointsEntity> matchingMatchPointsEntities = new ArrayList<>();
         matchingMatchPointsEntities.add(getMatchingMatchPointEntity());
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
-        Mockito.when(matchingAlgoHelperService.getActiveMqQueuesInfo()).thenReturn(activeMqQueuesInfo);
         Mockito.when(matchingAlgorithmUtil.getMatchingMatchPointsEntity(ScsbCommonConstants.MATCH_POINT_FIELD_OCLC)).thenReturn(matchingMatchPointsEntities);
         Mockito.when(matchingAlgorithmUtil.getMatchingMatchPointsEntity(ScsbCommonConstants.MATCH_POINT_FIELD_ISBN)).thenReturn(matchingMatchPointsEntities);
         Mockito.when(matchingAlgorithmUtil.getMatchingMatchPointsEntity(ScsbCommonConstants.MATCH_POINT_FIELD_ISSN)).thenReturn(matchingMatchPointsEntities);
@@ -125,12 +131,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
 
     @Test
     public void populateMatchingBibEntities() throws Exception {
-        Mockito.when(matchingAlgoHelperService.getActiveMqQueuesInfo()).thenReturn(activeMqQueuesInfo);
-        Mockito.when(matchingAlgoHelperService.getMatchingMatchPointsDetailsRepository()).thenReturn(matchingMatchPointsDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.fetchAndSaveMatchingBibs(ScsbCommonConstants.MATCH_POINT_FIELD_OCLC)).thenCallRealMethod();
-        Mockito.when(matchingAlgoHelperService.fetchAndSaveMatchingBibs(ScsbCommonConstants.MATCH_POINT_FIELD_ISBN)).thenCallRealMethod();
-        Mockito.when(matchingAlgoHelperService.fetchAndSaveMatchingBibs(ScsbCommonConstants.MATCH_POINT_FIELD_ISSN)).thenCallRealMethod();
-        Mockito.when(matchingAlgoHelperService.fetchAndSaveMatchingBibs(ScsbCommonConstants.MATCH_POINT_FIELD_LCCN)).thenCallRealMethod();
         Mockito.when(matchingMatchPointsDetailsRepository.countBasedOnCriteria(ScsbCommonConstants.MATCH_POINT_FIELD_OCLC)).thenReturn(Long.valueOf(0));
         Mockito.when(matchingMatchPointsDetailsRepository.countBasedOnCriteria(ScsbCommonConstants.MATCH_POINT_FIELD_ISBN)).thenReturn(Long.valueOf(0));
         Mockito.when(matchingMatchPointsDetailsRepository.countBasedOnCriteria(ScsbCommonConstants.MATCH_POINT_FIELD_ISSN)).thenReturn(Long.valueOf(0));
@@ -152,8 +152,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<Integer, MatchingBibEntity> matchingBibEntityMap = new HashMap<>();
         Map<Integer, MatchingBibEntity> bibEntityMap = new HashMap<>();
         Map<String, Integer> countMap = getStringIntegerMap();
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
         Mockito.when(matchingAlgorithmUtil.getMatchCriteriaValue(ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, matchingBibEntity)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(matchingAlgorithmUtil).populateCriteriaMap(oclcAndBibIdMap, matchingBibEntity.getBibId(), matchingBibEntity.getOclc());
         Mockito.when(matchingBibDetailsRepository.getMultiMatchBibIdsForOclcAndIsbn()).thenReturn(bibIds);
@@ -187,8 +185,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<Integer, MatchingBibEntity> matchingBibEntityMap = new HashMap<>();
         Map<Integer, MatchingBibEntity> bibEntityMap = new HashMap<>();
         Map<String, Integer> countMap = getStringIntegerMap();
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
         Mockito.when(matchingAlgorithmUtil.getMatchCriteriaValue(ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, matchingBibEntity)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(matchingAlgorithmUtil).populateCriteriaMap(oclcAndBibIdMap, matchingBibEntity.getBibId(), matchingBibEntity.getOclc());
         Mockito.when(matchingBibDetailsRepository.getMultiMatchBibIdsForOclcAndIssn()).thenReturn(bibIds);
@@ -214,8 +210,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<Integer, MatchingBibEntity> matchingBibEntityMap = new HashMap<>();
         Map<Integer, MatchingBibEntity> bibEntityMap = new HashMap<>();
         Map<String, Integer> countMap = getStringIntegerMap();
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
         Mockito.when(matchingAlgorithmUtil.getMatchCriteriaValue(ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, matchingBibEntity)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(matchingAlgorithmUtil).populateCriteriaMap(oclcAndBibIdMap, matchingBibEntity.getBibId(), matchingBibEntity.getOclc());
         Mockito.when(matchingBibDetailsRepository.getMultiMatchBibIdsForOclcAndLccn()).thenReturn(bibIds);
@@ -241,8 +235,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<Integer, MatchingBibEntity> matchingBibEntityMap = new HashMap<>();
         Map<Integer, MatchingBibEntity> bibEntityMap = new HashMap<>();
         Map<String, Integer> countMap = getStringIntegerMap();
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
         Mockito.when(matchingAlgorithmUtil.getMatchCriteriaValue(ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, matchingBibEntity)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(matchingAlgorithmUtil).populateCriteriaMap(isbnAndBibIdMap, matchingBibEntity.getBibId(), matchingBibEntity.getIsbn());
         Mockito.when(matchingBibDetailsRepository.getMultiMatchBibIdsForIsbnAndIssn()).thenReturn(bibIds);
@@ -268,8 +260,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<Integer, MatchingBibEntity> matchingBibEntityMap = new HashMap<>();
         Map<Integer, MatchingBibEntity> bibEntityMap = new HashMap<>();
         Map<String, Integer> countMap = getStringIntegerMap();
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
         Mockito.when(matchingAlgorithmUtil.getMatchCriteriaValue(ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, matchingBibEntity)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(matchingAlgorithmUtil).populateCriteriaMap(isbnAndBibIdMap, matchingBibEntity.getBibId(), matchingBibEntity.getIsbn());
         Mockito.when(matchingBibDetailsRepository.getMultiMatchBibIdsForIsbnAndLccn()).thenReturn(bibIds);
@@ -295,8 +285,6 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<Integer, MatchingBibEntity> matchingBibEntityMap = new HashMap<>();
         Map<Integer, MatchingBibEntity> bibEntityMap = new HashMap<>();
         Map<String, Integer> countMap = getStringIntegerMap();
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
         Mockito.when(matchingAlgorithmUtil.getMatchCriteriaValue(ScsbCommonConstants.MATCH_POINT_FIELD_ISSN, matchingBibEntity)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(matchingAlgorithmUtil).populateCriteriaMap(issnAndBibIdMap, matchingBibEntity.getBibId(), matchingBibEntity.getIssn());
         Mockito.when(matchingBibDetailsRepository.getMultiMatchBibIdsForIssnAndLccn()).thenReturn(bibIds);
@@ -318,22 +306,18 @@ public class MatchingAlgorithmHelperServiceUT extends BaseTestCaseUT {
         Map<String, Integer> countMap = getStringIntegerMap();
         Set<Integer> matchingBibIds = new HashSet<>();
         List<MatchingBibEntity> matchingBibEntityList = getMatchingBibEntity(matchingBibEntities).getContent();
-        Mockito.when(matchingAlgoHelperService.getMatchingAlgorithmUtil()).thenReturn(matchingAlgorithmUtil);
-        Mockito.when(matchingAlgoHelperService.getActiveMqQueuesInfo()).thenReturn(activeMqQueuesInfo);
-        Mockito.when(matchingAlgoHelperService.getMatchingBibDetailsRepository()).thenReturn(matchingBibDetailsRepository);
         Mockito.when(matchingAlgorithmUtil.getSingleMatchBibsAndSaveReport(1000, ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, getStringIntegerMap())).thenReturn(countMap);
         Mockito.when(matchingAlgorithmUtil.getSingleMatchBibsAndSaveReport(1000, ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, getStringIntegerMap())).thenReturn(countMap);
         Mockito.when(matchingAlgorithmUtil.getSingleMatchBibsAndSaveReport(1000, ScsbCommonConstants.MATCH_POINT_FIELD_ISSN, getStringIntegerMap())).thenReturn(countMap);
         Mockito.when(matchingAlgorithmUtil.getSingleMatchBibsAndSaveReport(1000, ScsbCommonConstants.MATCH_POINT_FIELD_LCCN, getStringIntegerMap())).thenReturn(countMap);
         matchingAlgorithmHelperService.saveMatchingSummaryCount(getStringIntegerMap());
-        Mockito.when(matchingAlgoHelperService.populateReportsForPendingMatches(1000, getStringIntegerMap())).thenCallRealMethod();
         Mockito.when(matchingBibDetailsRepository.findByStatus(PageRequest.of(0,1000), ScsbConstants.PENDING)).thenReturn(getMatchingBibEntity(matchingBibEntities));
         Mockito.when(matchingBibDetailsRepository.findByStatus(PageRequest.of(1,1000), ScsbConstants.PENDING)).thenReturn(getMatchingBibEntity(matchingBibEntities));
         Mockito.when(matchingAlgorithmUtil.processPendingMatchingBibs(matchingBibEntityList,matchingBibIds, getStringIntegerMap())).thenReturn(countMap);
         Map<String, Integer> countsMap = matchingAlgorithmHelperService.populateReportsForSingleMatch(1000, getStringIntegerMap());
-        assertEquals(Math.toIntExact(countsMap.get(ScsbConstants.PUL_MATCHING_COUNT)), 6);
-        assertEquals(Math.toIntExact(countsMap.get(ScsbConstants.CUL_MATCHING_COUNT)), 6);
-        assertEquals(Math.toIntExact(countsMap.get(ScsbConstants.NYPL_MATCHING_COUNT)), 6);
+        assertEquals(1,Math.toIntExact(countsMap.get(ScsbConstants.PUL_MATCHING_COUNT)));
+        assertEquals(1,Math.toIntExact(countsMap.get(ScsbConstants.CUL_MATCHING_COUNT)));
+        assertEquals(1,Math.toIntExact(countsMap.get(ScsbConstants.NYPL_MATCHING_COUNT)));
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.search.DataDumpSearchResult;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SearchRecordsUtil.class)
-public class SearchRecordRestControllerUT extends BaseTestCaseUT {
+public class SearchRecordRestControllerUT extends BaseTestCaseUT4 {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordRestController.class);
 

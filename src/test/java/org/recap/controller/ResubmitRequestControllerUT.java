@@ -1,6 +1,6 @@
 package org.recap.controller;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
@@ -8,7 +8,7 @@ import org.recap.model.request.ReplaceRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class ResubmitRequestControllerUT extends BaseTestCaseUT {

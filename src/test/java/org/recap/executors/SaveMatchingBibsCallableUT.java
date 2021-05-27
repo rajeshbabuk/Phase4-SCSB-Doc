@@ -17,6 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.jpa.MatchingMatchPointsEntity;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
-public class SaveMatchingBibsCallableUT extends BaseTestCaseUT {
+public class SaveMatchingBibsCallableUT extends BaseTestCaseUT4 {
 
     @Mock
     MatchingMatchPointsDetailsRepository matchingMatchPointsDetailsRepository;

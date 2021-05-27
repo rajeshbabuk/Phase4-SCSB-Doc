@@ -1,10 +1,13 @@
 package org.recap.util;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.search.DataDumpSearchResult;
@@ -13,9 +16,11 @@ import org.recap.model.search.SearchResultRow;
 import org.recap.model.solr.BibItem;
 import org.recap.model.solr.Holdings;
 import org.recap.model.solr.Item;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.solr.main.BibSolrDocumentRepository;
 import org.recap.repository.solr.main.DataDumpSolrDocumentRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
@@ -24,7 +29,7 @@ import static org.junit.Assert.*;
 /**
  * Created by hemalathas on 24/2/17.
  */
-public class SearchRecordsUtilUT extends BaseTestCaseUT {
+public class SearchRecordsUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     SearchRecordsUtil searchRecordsUtil;
@@ -38,12 +43,27 @@ public class SearchRecordsUtilUT extends BaseTestCaseUT {
     @Mock
     PropertyUtil propertyUtil;
 
+    @Mock
+    CommonUtil commonUtil;
+
+    @Mock
+    InstitutionDetailsRepository institutionDetailsRepository;
+
     @Value("${" + PropertyKeyConstants.SCSB_SUPPORT_INSTITUTION + "}")
     private String supportInstitution;
+
+
+    @Before
+    public void setup() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(commonUtil,"institutionDetailsRepository",institutionDetailsRepository);
+    }
+
 
     @Test
     public void searchRecords() throws Exception {
         SearchRecordsRequest searchRecordsRequest=new SearchRecordsRequest();
+        searchRecordsRequest.setOwningInstitutions(Arrays.asList("PUL","CUL","NYPL","HL"));
         Map<String, Object> searchResponse=new HashMap<>();
         List<BibItem> bibItems = getBibItemList();
         searchResponse.put(ScsbCommonConstants.SEARCH_SUCCESS_RESPONSE,bibItems);
@@ -138,6 +158,10 @@ public class SearchRecordsUtilUT extends BaseTestCaseUT {
         SearchRecordsRequest searchRecordsRequest=new SearchRecordsRequest();
         Map<String, Object> searchResponse=new HashMap<>();
         searchResponse.put(ScsbCommonConstants.SEARCH_ERROR_RESPONSE,"testError");
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenCallRealMethod();
+        List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+        Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
+
         Mockito.when(bibSolrDocumentRepository.search(Mockito.any())).thenReturn(searchResponse);
         Mockito.when(propertyUtil.getAllInstitutions()).thenReturn(Arrays.asList("PUL","CUL","NYPL","HL", supportInstitution));
         List<SearchResultRow> searchRecords = searchRecordsUtil.searchRecords(searchRecordsRequest);

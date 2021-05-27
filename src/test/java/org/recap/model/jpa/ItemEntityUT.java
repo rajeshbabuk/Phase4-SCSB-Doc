@@ -1,10 +1,10 @@
 package org.recap.model.jpa;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ItemEntityUT {
 

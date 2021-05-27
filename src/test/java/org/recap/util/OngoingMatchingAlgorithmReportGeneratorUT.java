@@ -1,6 +1,6 @@
 package org.recap.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
 import org.recap.model.jpa.ReportDataEntity;
@@ -9,7 +9,7 @@ import org.recap.model.matchingreports.TitleExceptionReport;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OngoingMatchingAlgorithmReportGeneratorUT extends BaseTestCaseUT {
 

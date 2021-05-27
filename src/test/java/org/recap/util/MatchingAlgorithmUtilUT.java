@@ -19,12 +19,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.jpa.MatchingBibEntity;
 import org.recap.model.jpa.MatchingMatchPointsEntity;
 import org.recap.model.jpa.ReportDataEntity;
 import org.recap.model.jpa.ReportEntity;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.MatchingBibDetailsRepository;
 import org.recap.repository.jpa.ReportDataDetailsRepository;
 import org.recap.repository.jpa.ReportDetailRepository;
@@ -50,7 +52,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class,SolrClient.class})
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-public class MatchingAlgorithmUtilUT extends BaseTestCaseUT {
+public class MatchingAlgorithmUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     MatchingAlgorithmUtil mockMatchingAlgorithmUtil;
@@ -70,10 +72,17 @@ public class MatchingAlgorithmUtilUT extends BaseTestCaseUT {
     @Mock
     ReportDetailRepository reportDetailRepository;
 
+    @Mock
+    CommonUtil commonUtil;
+
+    @Mock
+    InstitutionDetailsRepository institutionDetailsRepository;
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(mockMatchingAlgorithmUtil,"matchingHeaderValueLength",8000);
+        ReflectionTestUtils.setField(commonUtil,"institutionDetailsRepository",institutionDetailsRepository);
     }
 
     @Test
@@ -166,7 +175,10 @@ public class MatchingAlgorithmUtilUT extends BaseTestCaseUT {
         PowerMockito.when(mocksolrTemplate1.getSolrClient()).thenReturn(solrClient);
         QueryResponse queryResponse = Mockito.mock(QueryResponse.class);
         Mockito.when(solrClient.query(Mockito.any(SolrQuery.class))).thenReturn(queryResponse);
-        SolrDocumentList solrDocumentList = getSolrDocuments();
+       Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenCallRealMethod();
+       List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+       Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
+       SolrDocumentList solrDocumentList = getSolrDocuments();
         solrDocumentList.setNumFound(1);
         Mockito.when(queryResponse.getResults()).thenReturn(solrDocumentList);
         mockMatchingAlgorithmUtil.populateMatchingCounter();

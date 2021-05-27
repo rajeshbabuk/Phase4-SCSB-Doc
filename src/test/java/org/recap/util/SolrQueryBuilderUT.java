@@ -1,7 +1,7 @@
 package org.recap.util;
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
@@ -15,9 +15,9 @@ import java.util.Date;
 import java.util.List;
 
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by peris on 9/30/16.

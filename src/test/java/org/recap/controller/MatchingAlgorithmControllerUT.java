@@ -8,9 +8,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.executors.MatchingBibItemIndexExecutorService;
+import org.recap.matchingalgorithm.MatchingCounter;
 import org.recap.matchingalgorithm.service.MatchingAlgorithmHelperService;
 import org.recap.matchingalgorithm.service.MatchingAlgorithmUpdateCGDService;
 import org.recap.matchingalgorithm.service.MatchingBibInfoDetailService;
@@ -22,18 +24,21 @@ import org.recap.model.jpa.ReportDataEntity;
 import org.recap.report.ReportGenerator;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.CollectionGroupDetailsRepository;
-import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
+import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.repository.jpa.MatchingBibInfoDetailRepository;
 import org.recap.repository.jpa.ReportDataDetailsRepository;
 import org.recap.repository.jpa.ReportDetailRepository;
 import org.recap.service.ActiveMqQueuesInfo;
+import org.recap.util.CommonUtil;
 import org.recap.util.MatchingAlgorithmUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -52,17 +57,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
+import static org.recap.ScsbConstants.*;
+import static org.recap.ScsbConstants.MATCHING_COUNTER_UPDATED_OPEN;
 
 
 /**
  * Created by hemalathas on 1/8/16.
  */
-public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
+public class MatchingAlgorithmControllerUT extends BaseTestCaseUT4 {
 
     Logger logger = LoggerFactory.getLogger(MatchingAlgorithmControllerUT.class);
-
-    @InjectMocks
-    MatchingAlgorithmController matchingAlgorithmController = new MatchingAlgorithmController();
 
     @Mock
     MatchingAlgorithmController matchingAlgoController;
@@ -119,6 +123,15 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
     MatchingBibInfoDetailRepository matchingBibInfoDetailRepository;
 
     @Mock
+    CommonUtil commonUtil;
+
+    @Mock
+    InstitutionDetailsRepository institutionDetailsRepository;
+
+    @Mock
+    MatchingCounter matchingCounter;
+
+    @Mock
     private Map collectionGroupMap;
     private Map institutionMap;
 
@@ -126,10 +139,28 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
 
     private int pageNum = 1;
 
+    List<String> scsbInstitutions=Arrays.asList("HTC");
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
+        Map<String,Integer> cgdCounterMap=new HashMap<>();
+        cgdCounterMap.put(MATCHING_COUNTER_SHARED,1);
+        cgdCounterMap.put(MATCHING_COUNTER_OPEN,1);
+        cgdCounterMap.put(MATCHING_COUNTER_UPDATED_SHARED,0);
+        cgdCounterMap.put(MATCHING_COUNTER_UPDATED_OPEN,0);
+        List<String> institutions= Arrays.asList("PUL","CUL","NYPL","HL","UC");
+        Map<String, Map<String, Integer>> institutionCounterMap=new HashMap<>();
+        for (String institution : institutions) {
+            institutionCounterMap.put(institution,cgdCounterMap);
+        }
+        ReflectionTestUtils.setField(matchingAlgoController,"commonUtil",commonUtil);
+        ReflectionTestUtils.setField(matchingCounter,"scsbInstitutions",scsbInstitutions);
+        ReflectionTestUtils.setField(commonUtil,"supportInstitution","HTC");
+        ReflectionTestUtils.setField(matchingCounter,"institutionCounterMap",institutionCounterMap);
+        ReflectionTestUtils.setField(commonUtil,"institutionDetailsRepository",institutionDetailsRepository);
         Mockito.when(matchingAlgoController.getLogger()).thenCallRealMethod();
+        Mockito.when(matchingAlgoController.getMatchingAlgoBatchSize()).thenReturn(String.valueOf(batchSize));
         Mockito.when(matchingAlgoController.getMatchingAlgoBatchSize()).thenReturn(String.valueOf(batchSize));
     }
 
@@ -182,7 +213,7 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
 
     @Test
     public void matchingAlgorithmFindMatchingAndReportsTestException() throws Exception {
-        Mockito.when(matchingAlgoController.getMatchingAlgorithmHelperService()).thenReturn(matchingAlgorithmHelperService);
+        Mockito.when(matchingAlgoController.getMatchingAlgorithmHelperService()).thenThrow(NullPointerException.class);
         Mockito.when(matchingAlgorithmHelperService.findMatchingAndPopulateMatchPointsEntities()).thenReturn(Long.valueOf(10));
         Mockito.when(matchingAlgorithmHelperService.populateMatchingBibEntities()).thenReturn(Long.valueOf(10));
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
@@ -213,6 +244,9 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, ScsbCommonConstants.MATCH_POINT_FIELD_ISSN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, ScsbCommonConstants.MATCH_POINT_FIELD_LCCN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, ScsbCommonConstants.MATCH_POINT_FIELD_ISSN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenCallRealMethod();
+        List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+        Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, ScsbCommonConstants.MATCH_POINT_FIELD_LCCN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_ISSN, ScsbCommonConstants.MATCH_POINT_FIELD_LCCN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
         Mockito.when(matchingAlgorithmHelperService.populateReportsForSingleMatch(batchSize, getStringIntegerMap())).thenReturn(getStringIntegerMap());
@@ -223,6 +257,7 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
 
     @Test
     public void matchingAlgorithmOnlyReportsException() throws Exception {
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenThrow(NullPointerException.class);
         Mockito.when(matchingAlgoController.getMatchingAlgorithmHelperService()).thenReturn(matchingAlgorithmHelperService);
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, ScsbCommonConstants.MATCH_POINT_FIELD_ISBN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
         Mockito.when(matchingAlgorithmHelperService.populateReportsForMatchPoints(batchSize, ScsbCommonConstants.MATCH_POINT_FIELD_OCLC, ScsbCommonConstants.MATCH_POINT_FIELD_ISSN, getStringIntegerMap())).thenReturn(getStringIntegerMap());
@@ -369,6 +404,10 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
 
     @Test
     public void itemCountForSerials() throws Exception {
+        List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+        Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenReturn(allInstitutionCodeExceptSupportInstitution);
+
         Mockito.when(matchingAlgoController.getMatchingAlgorithmUpdateCGDService()).thenReturn(matchingAlgorithmUpdateCGDService);
         Mockito.doNothing().when(matchingAlgorithmUpdateCGDService).getItemsCountForSerialsMatching(batchSize);
         Mockito.when(matchingAlgoController.itemCountForSerials()).thenCallRealMethod();
@@ -381,6 +420,10 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
         ReportDataEntity reportDataEntity = new ReportDataEntity();
         reportDataEntity.setHeaderValue("1234");
         int totalPagesCount = 1;
+        List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+        Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenReturn(allInstitutionCodeExceptSupportInstitution);
+
         Mockito.when(matchingAlgoController.getMatchingAlgorithmUpdateCGDService()).thenReturn(matchingAlgorithmUpdateCGDService);
         Mockito.doCallRealMethod().when(matchingAlgorithmUpdateCGDService).getItemsCountForSerialsMatching(batchSize);
         Mockito.when(matchingAlgorithmUpdateCGDService.getReportDataDetailsRepository()).thenReturn(reportDataDetailsRepository);
@@ -432,6 +475,7 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
         bibliographicEntity.setLastUpdatedBy("tst");
         bibliographicEntity.setOwningInstitutionId(1);
         bibliographicEntity.setOwningInstitutionBibId(String.valueOf(random.nextInt()));
+        bibliographicEntity.setInstitutionEntity(institutionEntity);
         HoldingsEntity holdingsEntity = new HoldingsEntity();
         holdingsEntity.setContent("mock holdings".getBytes());
         holdingsEntity.setCreatedDate(new Date());
@@ -455,7 +499,7 @@ public class MatchingAlgorithmControllerUT extends BaseTestCaseUT {
         itemEntity.setLastUpdatedBy("tst");
         itemEntity.setItemAvailabilityStatusId(1);
         itemEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
-
+        itemEntity.setInstitutionEntity(institutionEntity);
         bibliographicEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
         bibliographicEntity.setItemEntities(Arrays.asList(itemEntity));
         return bibliographicEntity;

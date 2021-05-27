@@ -3,13 +3,14 @@ package org.recap.service;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.PropertyKeyConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertEquals;
 
-public class ActiveMqQueuesInfoUT extends BaseTestCaseUT {
+public class ActiveMqQueuesInfoUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     ActiveMqQueuesInfo activeMqQueuesInfo;

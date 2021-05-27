@@ -1,11 +1,11 @@
 package org.recap.model.accession;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.recap.BaseTestCaseUT;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by hemalathas on 29/6/17.

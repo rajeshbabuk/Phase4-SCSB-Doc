@@ -1,7 +1,7 @@
 package org.recap.matchingalgorithm;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -20,8 +20,8 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by angelind on 27/10/16.
@@ -50,7 +50,7 @@ public class MatchingAlgorithmUT extends BaseTestCaseUT {
 
     private Integer batchSize = 1000;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }

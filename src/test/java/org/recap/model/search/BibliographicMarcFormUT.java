@@ -1,13 +1,13 @@
 package org.recap.model.search;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.marc4j.marc.Record;
 import org.recap.util.BibJSONUtil;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by premkb on 2/8/16.

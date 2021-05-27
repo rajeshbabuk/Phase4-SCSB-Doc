@@ -1,6 +1,6 @@
 package org.recap.repository.solr.temp;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
@@ -8,7 +8,7 @@ import org.recap.model.solr.Item;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.solr.core.SolrTemplate;
 
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by premkb on 1/8/16.

@@ -1,7 +1,7 @@
 package org.recap.util;
 
 import org.apache.camel.ProducerTemplate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.recap.BaseTestCaseUT;
@@ -11,7 +11,7 @@ import org.recap.model.solr.Holdings;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class HoldingsJSONUtilUT extends BaseTestCaseUT {
 

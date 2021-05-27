@@ -1,6 +1,6 @@
 package org.recap.controller;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -13,8 +13,8 @@ import org.recap.repository.jpa.ItemDetailsRepository;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by hemalathas on 3/7/17.

@@ -14,6 +14,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
-public class AccessionReconcilationRestControllerUT extends BaseTestCaseUT {
+public class AccessionReconcilationRestControllerUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     AccessionReconcilationRestController accessionReconcilationRestController;

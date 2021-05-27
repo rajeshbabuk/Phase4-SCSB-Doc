@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.matchingalgorithm.MatchingAlgorithmCGDProcessor;
 import org.recap.matchingalgorithm.MatchingCounter;
@@ -21,6 +22,7 @@ import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.repository.jpa.ReportDataDetailsRepository;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by hemalathas on 5/7/17.
  */
 
-public class MatchingAlgorithmSerialsCGDCallableUT extends BaseTestCaseUT {
+public class MatchingAlgorithmSerialsCGDCallableUT extends BaseTestCaseUT4 {
 
     @Mock
     private ReportDataDetailsRepository reportDataDetailsRepository;
@@ -66,10 +68,17 @@ public class MatchingAlgorithmSerialsCGDCallableUT extends BaseTestCaseUT {
     @Mock
     private InstitutionDetailsRepository institutionDetailsRepository;
 
+
+    @Mock
+    MatchingCounter matchingCounter;
+
+    List<String> scsbInstitutions=Arrays.asList("HTC");
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         from = pageNum * Long.valueOf(batchSize);
+        ReflectionTestUtils.setField(matchingCounter,"scsbInstitutions",scsbInstitutions);
         MatchingCounter.reset();
         bibliographicEntity = saveBibSingleHoldingsSingleItem();
         collectionGroupId = bibliographicEntity.getItemEntities().get(0).getCollectionGroupId();

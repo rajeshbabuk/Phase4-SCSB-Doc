@@ -46,7 +46,6 @@ public class OngoingMatchingAlgorithmService {
                 Map<String, List<OngoingMatchingCGDReport>> institutionWiseCgdRoundTripReports = itemChangeLogEntityList.stream()
                         .map(this::getOngoingMatchingCGDReport)
                         .collect(Collectors.groupingBy(OngoingMatchingCGDReport::getInstitution));
-                camelContext.getRouteController().startRoute(ScsbConstants.S3_ONGOING_MATCHING_CGD_REPORT_ROUTE_ID);
                 institutionWiseCgdRoundTripReports.forEach(this::sendCgdReportsToQueue);
             }
             catch (CGDRoundTripReportException cgdRoundTripReportException){

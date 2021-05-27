@@ -1,8 +1,8 @@
 package org.recap.matchingalgorithm.service;
 
 import org.apache.camel.ProducerTemplate;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -12,28 +12,16 @@ import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.matchingalgorithm.MatchingAlgorithmCGDProcessor;
 import org.recap.matchingalgorithm.MatchingCounter;
-import org.recap.model.jpa.BibliographicEntity;
-import org.recap.model.jpa.HoldingsEntity;
-import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.ItemEntity;
-import org.recap.model.jpa.ItemStatusEntity;
-import org.recap.repository.jpa.BibliographicDetailsRepository;
-import org.recap.repository.jpa.CollectionGroupDetailsRepository;
-import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
-import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.model.jpa.*;
+import org.recap.repository.jpa.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.recap.ScsbConstants.*;
+import static org.recap.ScsbConstants.MATCHING_COUNTER_UPDATED_OPEN;
 
 public class MatchingAlgorithmCGDProcessorUT extends BaseTestCaseUT {
 
@@ -58,22 +46,27 @@ public class MatchingAlgorithmCGDProcessorUT extends BaseTestCaseUT {
     @Mock
     BibliographicDetailsRepository bibliographicDetailsRepository;
 
-    @Before
+    @Mock
+    InstitutionDetailsRepository institutionDetailsRepository;
+
+    @Mock
+    InstitutionEntity institutionEntity;
+
+    @BeforeEach
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(matchingCounter,"nyplCGDUpdatedOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"nyplOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"nyplSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulCGDUpdatedOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culCGDUpdatedOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulCGDUpdatedSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culCGDUpdatedSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"nyplCGDUpdatedSharedCount",0);
-    }
+        Map<String,Integer> cgdCounterMap=new HashMap<>();
+        cgdCounterMap.put(MATCHING_COUNTER_SHARED,1);
+        cgdCounterMap.put(MATCHING_COUNTER_OPEN,1);
+        cgdCounterMap.put(MATCHING_COUNTER_UPDATED_SHARED,0);
+        cgdCounterMap.put(MATCHING_COUNTER_UPDATED_OPEN,0);
+        List<String> institutions= Arrays.asList("PUL","CUL","NYPL","HL");
+        Map<String, Map<String, Integer>> institutionCounterMap=new HashMap<>();
+        for (String institution : institutions) {
+            institutionCounterMap.put(institution,cgdCounterMap);
+        }
+        ReflectionTestUtils.setField(matchingCounter,"institutionCounterMap",institutionCounterMap);
+       }
 
     @Test
     public void updateCGDProcess() throws Exception {
@@ -91,6 +84,8 @@ public class MatchingAlgorithmCGDProcessorUT extends BaseTestCaseUT {
         String matchingType= ScsbConstants.INITIAL_MATCHING_OPERATION_TYPE;
         ReflectionTestUtils.setField(matchingAlgorithmCGDProcessor,"matchingType",matchingType);
         Map<Integer, ItemEntity> itemEntityMap = getIntegerItemEntityMap();
+        Mockito.when(institutionEntity.getInstitutionCode()).thenReturn("PUL");
+        Mockito.when(institutionDetailsRepository.findById(Mockito.any())).thenReturn(Optional.of(institutionEntity));
         matchingAlgorithmCGDProcessor.updateCGDProcess(itemEntityMap);
         assertNotNull(itemEntityMap);
     }
@@ -401,20 +396,24 @@ public class MatchingAlgorithmCGDProcessorUT extends BaseTestCaseUT {
         bibliographicEntity.setCreatedBy("tst");
         bibliographicEntity.setLastUpdatedDate(new Date());
         bibliographicEntity.setLastUpdatedBy("tst");
+        bibliographicEntity.setInstitutionEntity(getInstitutionEntity(inst));
+        return bibliographicEntity;
+    }
+
+    private InstitutionEntity getInstitutionEntity(int inst) {
         InstitutionEntity institutionEntity=new InstitutionEntity();
         institutionEntity.setId(inst);
-        if(inst==1) {
+        if(inst ==1) {
             institutionEntity.setInstitutionName("PUL");
             institutionEntity.setInstitutionCode("PUL");
-        }else if(inst==2){
+        }else if(inst ==2){
             institutionEntity.setInstitutionName("CUL");
             institutionEntity.setInstitutionCode("CUL");
-        }else if(inst==3){
+        }else if(inst ==3){
             institutionEntity.setInstitutionName("NYPL");
             institutionEntity.setInstitutionCode("NYPL");
         }
-        bibliographicEntity.setInstitutionEntity(institutionEntity);
-        return bibliographicEntity;
+        return institutionEntity;
     }
 
     private HoldingsEntity getHoldingsEntity(int inst) {
@@ -451,8 +450,19 @@ public class MatchingAlgorithmCGDProcessorUT extends BaseTestCaseUT {
         itemStatusEntity.setStatusCode("Available");
         itemStatusEntity.setStatusDescription("Available");
         itemEntity.setItemStatusEntity(itemStatusEntity);
+        itemEntity.setInstitutionEntity(getInstitutionEntity(inst));
+        itemEntity.setCollectionGroupEntity(getCollectionGroupEntity());
         return itemEntity;
     }
+
+    private CollectionGroupEntity getCollectionGroupEntity() {
+        CollectionGroupEntity collectionGroupEntity=new CollectionGroupEntity();
+        collectionGroupEntity.setCollectionGroupDescription("Private");
+        collectionGroupEntity.setId(3);
+        collectionGroupEntity.setCollectionGroupCode("Private");
+        return collectionGroupEntity;
+    }
+
 
     private Map<Integer, ItemEntity> getIntegerItemEntityMap() {
         Map<Integer, ItemEntity> itemEntityMap=new HashMap<>();

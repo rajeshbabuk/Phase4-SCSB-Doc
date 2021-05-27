@@ -1,6 +1,6 @@
 package org.recap.model.search;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by premkb on 2/8/16.

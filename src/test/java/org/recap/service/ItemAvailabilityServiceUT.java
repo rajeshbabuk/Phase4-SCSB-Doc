@@ -1,10 +1,12 @@
 package org.recap.service;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
+import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.BibAvailabilityResponse;
 import org.recap.model.BibItemAvailabityStatusRequest;
@@ -18,14 +20,13 @@ import org.recap.model.jpa.ItemStatusEntity;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.repository.jpa.ItemStatusDetailsRepository;
+import org.recap.util.PropertyUtil;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by hemalathas on 23/2/17.
@@ -43,6 +44,15 @@ public class ItemAvailabilityServiceUT extends BaseTestCaseUT {
 
     @Mock
     BibliographicDetailsRepository bibliographicDetailsRepository;
+
+    @Mock
+    PropertyUtil propertyUtil;
+
+    @Mock
+    ItemStatusDetailsRepository itemStatusDetailsRepository;
+
+    @Mock
+    ItemStatusEntity itemNotAvailableStatusEntity;
 
     @Test
     public void testItemAvailabilityService() throws Exception {
@@ -67,10 +77,22 @@ public class ItemAvailabilityServiceUT extends BaseTestCaseUT {
         bibItemAvailabityStatusRequest.setInstitutionId("PUL");
         InstitutionEntity institutionEntity = getInstitutionEntity();
         Mockito.when(institutionDetailsRepository.findByInstitutionCode(Mockito.anyString())).thenReturn(institutionEntity);
+        Mockito.when(itemStatusDetailsRepository.findByStatusCode(Mockito.anyString())).thenReturn(itemNotAvailableStatusEntity);
         Mockito.when(bibliographicDetailsRepository.findByOwningInstitutionIdAndOwningInstitutionBibId(Mockito.anyInt(),Mockito.anyString())).thenReturn(saveBibSingleHoldingsSingleItem());
+        Map<String, String> propertyMap = getCirculationFreezePropertyMap();
+        propertyMap.put("PUL", "true");
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(propertyMap);
         List<BibAvailabilityResponse> bibAvailabilityResponses = itemAvailabilityService.getBibItemAvailabilityStatus(bibItemAvailabityStatusRequest);
         assertNotNull(bibAvailabilityResponses);
-        assertEquals("Available",bibAvailabilityResponses.get(0).getItemAvailabilityStatus());
+    }
+
+    private Map<String, String> getCirculationFreezePropertyMap() {
+        Map<String, String> propertyMap = new HashMap<>();
+        propertyMap.put("PUL", "false");
+        propertyMap.put("CUL", "false");
+        propertyMap.put("NYPL", "false");
+        propertyMap.put("HL", "false");
+        return propertyMap;
     }
 
     @Test
@@ -112,6 +134,11 @@ public class ItemAvailabilityServiceUT extends BaseTestCaseUT {
         bibliographicEntity.setLastUpdatedBy("tst");
         bibliographicEntity.setOwningInstitutionId(5);
         bibliographicEntity.setOwningInstitutionBibId(String.valueOf(random.nextInt()));
+        InstitutionEntity institutionEntity=new InstitutionEntity();
+        institutionEntity.setId(1);
+        institutionEntity.setInstitutionName("PRINCETON");
+        institutionEntity.setInstitutionCode(ScsbCommonConstants.PRINCETON);
+        bibliographicEntity.setInstitutionEntity(institutionEntity);
         HoldingsEntity holdingsEntity = new HoldingsEntity();
         holdingsEntity.setContent("mock holdings".getBytes());
         holdingsEntity.setCreatedDate(new Date());
@@ -140,7 +167,7 @@ public class ItemAvailabilityServiceUT extends BaseTestCaseUT {
         itemEntity.setItemStatusEntity(itemStatusEntity);
         itemEntity.setCollectionGroupEntity(getCollectionGroupEntity());
         itemEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
-
+        itemEntity.setInstitutionEntity(institutionEntity);
         bibliographicEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
         bibliographicEntity.setItemEntities(Arrays.asList(itemEntity));
         return bibliographicEntity;

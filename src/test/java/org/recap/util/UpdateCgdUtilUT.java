@@ -13,17 +13,15 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.CollectionGroupEntity;
 import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.ItemEntity;
-import org.recap.repository.jpa.BibliographicDetailsRepository;
-import org.recap.repository.jpa.CollectionGroupDetailsRepository;
-import org.recap.repository.jpa.HoldingsDetailsRepository;
-import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
-import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.repository.jpa.*;
+import org.recap.service.SCSBService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -46,7 +44,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SolrTemplate.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*"})
-public class UpdateCgdUtilUT extends BaseTestCaseUT {
+public class UpdateCgdUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     UpdateCgdUtil updateCgdUtil;
@@ -72,17 +70,27 @@ public class UpdateCgdUtilUT extends BaseTestCaseUT {
     @Value("${" + PropertyKeyConstants.SOLR_PARENT_CORE + "}")
     String solrCore;
 
+    @Mock
+    UserDetailsRepository userDetailsRepository;
+
+    @Mock
+    SCSBService scsbService;
+
 
     @Test
     public void updateCGDForItem() throws Exception {
         Mockito.when(collectionGroupDetailsRepository.findByCollectionGroupCode(Mockito.anyString())).thenReturn(getCollectionGroupEntity());
         Mockito.when(itemDetailsRepository.updateCollectionGroupIdByItemBarcode(Mockito.anyInt(),Mockito.anyString(),Mockito.anyString(),Mockito.any())).thenReturn(1);
         Mockito.when(itemDetailsRepository.findByBarcode(Mockito.anyString())).thenReturn(getBibliographicEntity().getItemEntities());
+        Mockito.when(scsbService.validateUserRoles(Mockito.anyList(),Mockito.anyString(),Mockito.anyString())).thenReturn(true);
         SolrTemplate mocksolrTemplate1 = PowerMockito.mock(SolrTemplate.class);
         SolrInputDocument solrInputDocument=new SolrInputDocument();
+        Mockito.when(itemDetailsRepository.findInstitutionCodeByBarcode(Mockito.anyString())).thenReturn("123456");
+        Mockito.when(userDetailsRepository.getUserRoles(Mockito.anyString())).thenReturn(Arrays.asList("pul_user"));
+        Mockito.when(userDetailsRepository.findInstitutionCodeByUserName(Mockito.anyString())).thenReturn(ScsbCommonConstants.PRINCETON);
         Mockito.when(mocksolrTemplate1.convertBeanToSolrInputDocument(Mockito.any())).thenReturn(solrInputDocument);
         ReflectionTestUtils.setField(updateCgdUtil,"solrTemplate",mocksolrTemplate1);
-        String response=  updateCgdUtil.updateCGDForItem("123456", "PUL", "Shared", "Private", "Notes for updating CGD", ScsbCommonConstants.GUEST);
+        String response=  updateCgdUtil.updateCGDForItem("123456", ScsbCommonConstants.PRINCETON, ScsbCommonConstants.SHARED_CGD, ScsbCommonConstants.PRIVATE, "Notes for updating CGD", "pul_user");
         assertEquals(ScsbCommonConstants.SUCCESS,response);
     }
 
@@ -95,7 +103,8 @@ public class UpdateCgdUtilUT extends BaseTestCaseUT {
         SolrInputDocument solrInputDocument=new SolrInputDocument();
         Mockito.when(mocksolrTemplate1.convertBeanToSolrInputDocument(Mockito.any())).thenReturn(solrInputDocument);
         ReflectionTestUtils.setField(updateCgdUtil,"solrTemplate",mocksolrTemplate1);
-        String response=  updateCgdUtil.updateCGDForItem("123456", "PUL", "Shared", "Private", "Notes for updating CGD","");
+        Mockito.when(userDetailsRepository.findInstitutionCodeByUserName(Mockito.anyString())).thenReturn(ScsbCommonConstants.PRINCETON);
+        String response=  updateCgdUtil.updateCGDForItem("123456", ScsbCommonConstants.PRINCETON, ScsbCommonConstants.SHARED_CGD, ScsbCommonConstants.PRIVATE, "Notes for updating CGD","");
         assertTrue(response.contains(ScsbCommonConstants.FAILURE));
     }
 

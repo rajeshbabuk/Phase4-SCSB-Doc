@@ -8,11 +8,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertTrue;
 
-public class StopRouteProcessorUT extends BaseTestCaseUT {
+public class StopRouteProcessorUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     StopRouteProcessor stopRouteProcessor;

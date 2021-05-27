@@ -103,13 +103,11 @@ public class S3MatchingReportsRouteBuilder {
                     public void configure() throws Exception {
                         from(ScsbConstants.S3_ONGOING_MATCHING_CGD_REPORT_Q)
                                 .routeId(ScsbConstants.S3_ONGOING_MATCHING_CGD_REPORT_ROUTE_ID)
-                                .noAutoStartup()
                                 .marshal().bindy(BindyType.Csv, OngoingMatchingCGDReport.class)
                                 .setHeader(S3Constants.KEY, simple(s3MatchingReportsDirectory+"cgd-round-trip/"+"${in.header.Institution}"+"/"+ ScsbConstants.MATCHING_REPORT_FILE_NAME_CAMEL_HEADER))
                                 .to(ScsbConstants.SCSB_CAMEL_S3_TO_ENDPOINT)
                                 .onCompletion()
                                 .bean(applicationContext.getBean(EmailService.class), ScsbConstants.MATCHING_REPORTS_SEND_EMAIL)
-                                .process(new StopRouteProcessor(ScsbConstants.S3_ONGOING_MATCHING_CGD_REPORT_ROUTE_ID))
                                 .log("Ongoing Matching CGD reports generated and uploaded to s3 successfully.")
                                 .end();
 

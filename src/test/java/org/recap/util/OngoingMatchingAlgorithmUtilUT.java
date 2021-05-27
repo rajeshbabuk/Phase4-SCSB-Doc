@@ -15,24 +15,15 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.matchingalgorithm.MatchingAlgorithmCGDProcessor;
 import org.recap.matchingalgorithm.MatchingCounter;
 import org.recap.matchingalgorithm.service.OngoingMatchingReportsService;
-import org.recap.model.jpa.BibliographicEntity;
-import org.recap.model.jpa.CollectionGroupEntity;
-import org.recap.model.jpa.HoldingsEntity;
-import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.ItemEntity;
-import org.recap.model.jpa.ItemStatusEntity;
-import org.recap.model.jpa.ReportEntity;
+import org.recap.model.jpa.*;
 import org.recap.model.solr.BibItem;
-import org.recap.repository.jpa.BibliographicDetailsRepository;
-import org.recap.repository.jpa.CollectionGroupDetailsRepository;
-import org.recap.repository.jpa.InstitutionDetailsRepository;
-import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
-import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.repository.jpa.*;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -54,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class,SolrClient.class})
-public class OngoingMatchingAlgorithmUtilUT extends BaseTestCaseUT {
+public class OngoingMatchingAlgorithmUtilUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     OngoingMatchingAlgorithmUtil ongoingMatchingAlgorithmUtil;
@@ -101,6 +92,9 @@ public class OngoingMatchingAlgorithmUtilUT extends BaseTestCaseUT {
     @Mock
     MatchingCounter matchingCounter;
 
+    @Mock
+    ReportDataDetailsRepository reportDataDetailsRepository;
+
     @Test
     public void fetchUpdatedRecordsAndStartProcessSingleMatch() throws Exception {
         SolrTemplate mocksolrTemplate1 = PowerMockito.mock(SolrTemplate.class);
@@ -138,6 +132,13 @@ public class OngoingMatchingAlgorithmUtilUT extends BaseTestCaseUT {
             Mockito.when(collectionGroupDetailsRepository.findAll()).thenReturn(collectionGroupEntities);
             Mockito.when(institutionDetailsRepository.findAll()).thenReturn(institutionEntities);
             ongoingMatchingAlgorithmUtil.updateCGDForItemInSolr(itemIds);
+            List<ReportDataEntity> reportDataEntitiesToUpdate=new ArrayList<>();
+            ReportDataEntity reportDataEntity = new ReportDataEntity();
+            reportDataEntity.setHeaderName("Test");
+            reportDataEntity.setHeaderValue("Test");
+            reportDataEntitiesToUpdate.add(reportDataEntity);
+            Mockito.when(reportDataDetailsRepository.getReportDataEntityByRecordNumIn(Mockito.anyList(),Mockito.anyString())).thenReturn(reportDataEntitiesToUpdate);
+
             String status = ongoingMatchingAlgorithmUtil.fetchUpdatedRecordsAndStartProcess(fromDate, 1);
             assertEquals(ScsbCommonConstants.SUCCESS, status);
             
@@ -191,9 +192,6 @@ public class OngoingMatchingAlgorithmUtilUT extends BaseTestCaseUT {
         itemEntities1.add(itemEntity1);
         bibliographicEntity.setItemEntities(itemEntities1);
         bibliographicEntities.add(bibliographicEntity);
-        ReflectionTestUtils.setField(matchingCounter,"pulCGDUpdatedOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulSharedCount",0);
         Mockito.when(bibliographicDetailsRepository.findByIdIn(Mockito.anyList())).thenReturn(bibliographicEntities);
         ongoingMatchingAlgorithmUtil.updateCGDForItemInSolr(itemIds);
         String status = ongoingMatchingAlgorithmUtil.fetchUpdatedRecordsAndStartProcess(fromDate, 1);
@@ -247,9 +245,6 @@ public class OngoingMatchingAlgorithmUtilUT extends BaseTestCaseUT {
         itemEntities1.add(itemEntity1);
         bibliographicEntity.setItemEntities(itemEntities1);
         bibliographicEntities.add(bibliographicEntity);
-        ReflectionTestUtils.setField(matchingCounter,"pulCGDUpdatedOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulSharedCount",0);
         Mockito.when(bibliographicDetailsRepository.findByIdIn(Mockito.anyList())).thenReturn(bibliographicEntities);
         Mockito.doThrow(NullPointerException.class).when(matchingAlgorithmUtil).getReportDataEntity(Mockito.anyString(),Mockito.anyString(),Mockito.anyList());
         ongoingMatchingAlgorithmUtil.updateCGDForItemInSolr(itemIds);

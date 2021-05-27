@@ -18,10 +18,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.recap.BaseTestCaseUT;
-import org.recap.PropertyKeyConstants;
-import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.*;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.ItemEntity;
@@ -54,7 +51,7 @@ import static org.junit.Assert.assertNull;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-public class DataDumpSolrDocumentRepositoryImplAT extends BaseTestCaseUT {
+public class DataDumpSolrDocumentRepositoryImplAT extends BaseTestCaseUT4 {
 
     @InjectMocks
     private DataDumpSolrDocumentRepositoryImpl dataDumpSolrDocumentRepository;

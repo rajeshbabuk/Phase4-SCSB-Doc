@@ -8,10 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.recap.BaseTestCaseUT;
-import org.recap.PropertyKeyConstants;
-import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.*;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.InstitutionEntity;
@@ -53,7 +50,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by Anithav on 30/06/20.
  */
 
-public class TransferServiceUT extends BaseTestCaseUT {
+public class TransferServiceUT extends BaseTestCaseUT4 {
     private static final Logger logger = LoggerFactory.getLogger(TransferServiceUT.class);
 
     @InjectMocks

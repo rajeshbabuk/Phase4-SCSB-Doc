@@ -1,11 +1,14 @@
 package org.recap.matchingalgorithm.service;
 
 import org.apache.solr.client.solrj.SolrServerException;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.matchingalgorithm.MatchingCounter;
 import org.recap.model.jpa.BibliographicEntity;
@@ -20,6 +23,7 @@ import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
 import org.recap.repository.jpa.ReportDataDetailsRepository;
 import org.recap.service.ActiveMqQueuesInfo;
+import org.recap.util.CommonUtil;
 import org.recap.util.MatchingAlgorithmUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -27,15 +31,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertNotNull;
+import static org.recap.ScsbConstants.MATCHING_COUNTER_OPEN;
+import static org.recap.ScsbConstants.MATCHING_COUNTER_SHARED;
+import static org.recap.ScsbConstants.MATCHING_COUNTER_UPDATED_OPEN;
+import static org.recap.ScsbConstants.MATCHING_COUNTER_UPDATED_SHARED;
 
 /**
  * Created by hemalathas on 7/7/17.
  */
-public class MatchingAlgorithmUpdateCGDServiceUT extends BaseTestCaseUT {
+public class MatchingAlgorithmUpdateCGDServiceUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     MatchingAlgorithmUpdateCGDService matchingAlgorithmUpdateCGDService;
@@ -64,16 +74,38 @@ public class MatchingAlgorithmUpdateCGDServiceUT extends BaseTestCaseUT {
     @Mock
     ItemChangeLogDetailsRepository itemChangeLogDetailsRepository;
 
+    @Mock
+    CommonUtil commonUtil;
 
+    List<String> scsbInstitutions=Arrays.asList("HTC");
+
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        Map<String,Integer> cgdCounterMap=new HashMap<>();
+        cgdCounterMap.put(MATCHING_COUNTER_SHARED,1);
+        cgdCounterMap.put(MATCHING_COUNTER_OPEN,1);
+        cgdCounterMap.put(MATCHING_COUNTER_UPDATED_SHARED,0);
+        cgdCounterMap.put(MATCHING_COUNTER_UPDATED_OPEN,0);
+        List<String> institutions= Arrays.asList("PUL","CUL","NYPL","HL");
+        Map<String, Map<String, Integer>> institutionCounterMap=new HashMap<>();
+        for (String institution : institutions) {
+            institutionCounterMap.put(institution,cgdCounterMap);
+        }
+        ReflectionTestUtils.setField(commonUtil,"institutionDetailsRepository",institutionDetailsRepository);
+        ReflectionTestUtils.setField(matchingCounter,"scsbInstitutions",scsbInstitutions);
+        ReflectionTestUtils.setField(matchingCounter,"institutionCounterMap",institutionCounterMap);
+    }
 
         @Test
         public void updateCGDProcessForMVMs() throws SolrServerException, InterruptedException, IOException {
-        ReflectionTestUtils.setField(matchingCounter,"pulSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"nyplSharedCount",0);
-        Mockito.when(institutionDetailsRepository.findAll()).thenReturn(getInstitutionEntities());
-        Mockito.when(collectionGroupDetailsRepository.findAll()).thenReturn(getCollectionGroupEntities());
-        Mockito.when(activeMqQueuesInfo.getActivemqQueuesInfo(Mockito.anyString())).thenReturn(1).thenReturn(0);
+            Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenCallRealMethod();
+            List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+            Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
+            Mockito.when(institutionDetailsRepository.findAll()).thenReturn(getInstitutionEntities());
+            Mockito.when(collectionGroupDetailsRepository.findAll()).thenReturn(getCollectionGroupEntities());
+            Mockito.when(activeMqQueuesInfo.getActivemqQueuesInfo(Mockito.anyString())).thenReturn(1).thenReturn(0);
             matchingAlgorithmUpdateCGDService.updateCGDProcessForMonographs(1);
             matchingAlgorithmUpdateCGDService.updateCGDProcessForMVMs(1);
             matchingAlgorithmUpdateCGDService.updateCGDProcessForSerials(1);
@@ -94,7 +126,6 @@ public class MatchingAlgorithmUpdateCGDServiceUT extends BaseTestCaseUT {
         Mockito.when(bibliographicDetailsRepository.findByIdIn(Mockito.anyList())).thenReturn(bibliographicEntities);
         Mockito.when(institutionDetailsRepository.findAll()).thenReturn(getInstitutionEntities());
         Mockito.when(collectionGroupDetailsRepository.findAll()).thenReturn(getCollectionGroupEntities());
-        ReflectionTestUtils.setField(matchingCounter,"culCGDUpdatedSharedCount",0);
         matchingAlgorithmUpdateCGDService.getItemsCountForSerialsMatching(1);
         assertNotNull(bibliographicEntities);
     }
@@ -163,6 +194,7 @@ public class MatchingAlgorithmUpdateCGDServiceUT extends BaseTestCaseUT {
         itemStatusEntity.setStatusCode("Available");
         itemStatusEntity.setStatusDescription("Available");
         itemEntity.setItemStatusEntity(itemStatusEntity);
+        itemEntity.setInstitutionEntity(getInstitutionEntity());
         return itemEntity;
     }
 

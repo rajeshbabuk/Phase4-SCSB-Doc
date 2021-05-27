@@ -22,6 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.admin.SolrAdmin;
@@ -56,7 +57,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class,SolrClient.class})
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-public class ExecutorAT extends BaseTestCaseUT {
+public class ExecutorAT extends BaseTestCaseUT4 {
 
     @InjectMocks
     BibItemIndexExecutorService bibItemIndexExecutorService;

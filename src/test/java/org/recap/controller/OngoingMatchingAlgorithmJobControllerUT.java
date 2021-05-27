@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.matchingalgorithm.service.MatchingBibInfoDetailService;
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by angelind on 13/6/17.
  */
-public class OngoingMatchingAlgorithmJobControllerUT extends BaseTestCaseUT {
+public class OngoingMatchingAlgorithmJobControllerUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     OngoingMatchingAlgorithmJobController ongoingMatchingAlgorithmJobController = new OngoingMatchingAlgorithmJobController();

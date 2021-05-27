@@ -1,6 +1,6 @@
 package org.recap.service.accession;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by premkb on 28/4/17.

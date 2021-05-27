@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.matchingalgorithm.MatchingAlgorithmCGDProcessor;
 import org.recap.matchingalgorithm.MatchingCounter;
@@ -21,6 +22,7 @@ import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.repository.jpa.ReportDataDetailsRepository;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by hemalathas on 5/7/17.
  */
-public class MatchingAlgorithmMVMsCGDCallableUT extends BaseTestCaseUT {
+public class MatchingAlgorithmMVMsCGDCallableUT extends BaseTestCaseUT4 {
 
     @Mock
     private ReportDataDetailsRepository reportDataDetailsRepository;
@@ -56,6 +58,8 @@ public class MatchingAlgorithmMVMsCGDCallableUT extends BaseTestCaseUT {
     ProducerTemplate producerTemplate;
     @Mock
     private Map collectionGroupMap;
+    @Mock
+    MatchingCounter matchingCounter;
 
     long from = Long.valueOf(0);
     int pageNum = 1;
@@ -73,7 +77,9 @@ public class MatchingAlgorithmMVMsCGDCallableUT extends BaseTestCaseUT {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         from = pageNum * Long.valueOf(batchSize);
-        MatchingCounter.reset();
+       // MatchingCounter.reset();
+        List<String> scsbInstitutions=Arrays.asList("HTC");
+        ReflectionTestUtils.setField(matchingCounter,"scsbInstitutions",scsbInstitutions);
         bibliographicEntity = saveBibSingleHoldingsSingleItem();
         collectionGroupId = bibliographicEntity.getItemEntities().get(0).getCollectionGroupId();
         Mockito.when(reportDataDetailsRepository.getReportDataEntityForMatchingMVMs(ScsbCommonConstants.BIB_ID, from, batchSize)).thenReturn(getReportDataEntity(bibliographicEntity.getId()));

@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.accession.AccessionRequest;
 import org.recap.model.jpa.BibliographicEntity;
@@ -39,7 +40,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 
-public class MarcToBibEntityConverterUT extends BaseTestCaseUT {
+public class MarcToBibEntityConverterUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     MarcToBibEntityConverter marcToBibEntityConverter;

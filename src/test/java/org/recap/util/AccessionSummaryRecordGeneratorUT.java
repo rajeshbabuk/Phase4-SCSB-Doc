@@ -1,6 +1,6 @@
 package org.recap.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
@@ -12,7 +12,7 @@ import org.recap.model.jpa.ReportEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**

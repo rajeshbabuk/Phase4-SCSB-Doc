@@ -28,10 +28,7 @@ import org.recap.model.jpa.ReportEntity;
 import org.recap.model.matchingreports.MatchingSummaryReport;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.ReportDetailRepository;
-import org.recap.util.CsvUtil;
-import org.recap.util.DateUtil;
-import org.recap.util.PropertyUtil;
-import org.recap.util.SolrQueryBuilder;
+import org.recap.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.solr.core.SolrTemplate;
@@ -55,7 +52,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SolrTemplate.class, SolrClient.class})
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-public class OngoingMatchingReportsServiceUT extends BaseTestCaseUT{
+public class OngoingMatchingReportsServiceUT extends BaseTestCaseUT4{
 
     @InjectMocks
     OngoingMatchingReportsService ongoingMatchingReportsService;
@@ -99,16 +96,17 @@ public class OngoingMatchingReportsServiceUT extends BaseTestCaseUT{
     @Value("${" + PropertyKeyConstants.SCSB_SUPPORT_INSTITUTION + "}")
     private String supportInstitution;
 
+    @Mock
+    CommonUtil commonUtil;
+
+    List<String> scsbInstitutions=Arrays.asList("HTC");
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(commonUtil,"institutionDetailsRepository",institutionDetailsRepository);
+        ReflectionTestUtils.setField(matchingCounter,"scsbInstitutions",scsbInstitutions);
         ReflectionTestUtils.setField(ongoingMatchingReportsService,"matchingReportsDirectory",matchingReportsDirectory);
-        ReflectionTestUtils.setField(matchingCounter,"pulOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"pulSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"culSharedCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"nyplOpenCount",0);
-        ReflectionTestUtils.setField(matchingCounter,"nyplSharedCount",0);
     }
 
     @Test
@@ -258,6 +256,9 @@ public class OngoingMatchingReportsServiceUT extends BaseTestCaseUT{
 
     @Test
     public void populateSummaryReport() throws Exception {
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenCallRealMethod();
+        List<String> allInstitutionCodeExceptSupportInstitution=Arrays.asList(ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.PRINCETON,ScsbCommonConstants.NYPL);
+        Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(Mockito.anyString())).thenReturn(allInstitutionCodeExceptSupportInstitution);
         List<InstitutionEntity> institutionEntities=new ArrayList<>();
         institutionEntities.add(TestUtil.getInstitutionEntity(3,ScsbCommonConstants.NYPL,ScsbCommonConstants.NYPL));
         institutionEntities.add(TestUtil.getInstitutionEntity(2,ScsbCommonConstants.COLUMBIA,ScsbCommonConstants.COLUMBIA));

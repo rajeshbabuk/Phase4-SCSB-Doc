@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.BaseTestCaseUT4;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.accession.AccessionRequest;
 import org.recap.model.jaxb.Bib;
@@ -48,7 +49,7 @@ import static org.junit.Assert.assertTrue;
  * Created by premkb on 15/12/16.
  */
 
-public class SCSBToBibEntityConverterUT extends BaseTestCaseUT {
+public class SCSBToBibEntityConverterUT extends BaseTestCaseUT4 {
 
     @InjectMocks
     SCSBToBibEntityConverter scsbToBibEntityConverter;

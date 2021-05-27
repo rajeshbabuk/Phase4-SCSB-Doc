@@ -1,8 +1,9 @@
 package org.recap;
 
 import org.apache.solr.client.solrj.SolrClient;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.recap.admin.SolrAdmin;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.CollectionGroupDetailsRepository;
@@ -24,11 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(classes = Main.class)
 @WebAppConfiguration
 @Transactional

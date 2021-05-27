@@ -1,14 +1,13 @@
 package org.recap;
 
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource("classpath:application.properties")
-public class BaseTestCaseUT {
+public class BaseTestCaseUT4 {
 
     @Test
     public void loadContexts() {
