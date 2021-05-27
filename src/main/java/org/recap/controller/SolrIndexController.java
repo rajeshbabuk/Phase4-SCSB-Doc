@@ -143,6 +143,15 @@ public class SolrIndexController {
     public String partialIndex(@Valid @ModelAttribute("solrIndexRequest") SolrIndexRequest solrIndexRequest,
                             BindingResult result,
                             Model model) throws Exception {
+        return partialIndex(solrIndexRequest);
+    }
+
+    @PostMapping(value = "/solrIndexer/partialIndexing")
+    public String partialIndexing(@RequestBody SolrIndexRequest solrIndexRequest) throws Exception {
+        return partialIndex(solrIndexRequest);
+    }
+
+    public String partialIndex(SolrIndexRequest solrIndexRequest) throws Exception {
         Integer numberOfThread = solrIndexRequest.getNumberOfThreads();
         Integer numberOfDoc = solrIndexRequest.getNumberOfDocs();
         if (solrIndexRequest.getCommitInterval() == null) {
