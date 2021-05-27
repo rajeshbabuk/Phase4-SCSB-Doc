@@ -143,7 +143,8 @@ public class SolrIndexController {
     public String partialIndex(@Valid @ModelAttribute("solrIndexRequest") SolrIndexRequest solrIndexRequest,
                             BindingResult result,
                             Model model) throws Exception {
-        return partialIndex(solrIndexRequest);
+        String status = partialIndex(solrIndexRequest);
+        return report(status);
     }
 
     @PostMapping(value = "/solrIndexer/partialIndexing")
@@ -151,7 +152,7 @@ public class SolrIndexController {
         return partialIndex(solrIndexRequest);
     }
 
-    public String partialIndex(SolrIndexRequest solrIndexRequest) throws Exception {
+    public String partialIndex(SolrIndexRequest solrIndexRequest) {
         Integer numberOfThread = solrIndexRequest.getNumberOfThreads();
         Integer numberOfDoc = solrIndexRequest.getNumberOfDocs();
         if (solrIndexRequest.getCommitInterval() == null) {
@@ -162,9 +163,7 @@ public class SolrIndexController {
         logger.info("Number of Threads : {} Number of Docs : {} Commit Interval : {} From Date : {}",numberOfThread,numberOfDoc,commitInterval,solrIndexRequest.getDateFrom());
 
         Integer totalProcessedRecords = bibItemIndexExecutorService.partialIndex(solrIndexRequest);
-        String status = "Total number of records processed : " + totalProcessedRecords;
-
-        return report(status);
+        return "Total number of records processed : " + totalProcessedRecords;
     }
 
     /**
