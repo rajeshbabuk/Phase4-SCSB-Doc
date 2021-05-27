@@ -147,6 +147,7 @@ public class SolrIndexController {
         return report(status);
     }
 
+    @ResponseBody
     @PostMapping(value = "/solrIndexer/partialIndexing")
     public String partialIndexing(@RequestBody SolrIndexRequest solrIndexRequest) throws Exception {
         return partialIndex(solrIndexRequest);
