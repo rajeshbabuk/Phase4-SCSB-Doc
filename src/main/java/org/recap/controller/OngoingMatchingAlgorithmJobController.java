@@ -17,6 +17,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -70,14 +71,24 @@ public class OngoingMatchingAlgorithmJobController {
     public String startMatchingAlgorithmJob(@Valid @ModelAttribute("solrIndexRequest") SolrIndexRequest solrIndexRequest) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Date date = solrIndexRequest.getCreatedDate();
         String jobType = solrIndexRequest.getProcessType();
+        String matchBy = solrIndexRequest.getMatchBy();
         String status = "";
         Integer rows = Integer.valueOf(getBatchSize());
+        logger.info("Process Type : {}, Match By : {}, Batch Size : {} ", jobType, matchBy, rows);
         try {
-            if (jobType.equalsIgnoreCase(ScsbCommonConstants.ONGOING_MATCHING_ALGORITHM_JOB)) {
+            if (jobType.equalsIgnoreCase(ScsbCommonConstants.ONGOING_MATCHING_ALGORITHM_JOB) && matchBy.equalsIgnoreCase(ScsbConstants.FROM_DATE)) {
+                logger.info("From Date : {}", solrIndexRequest.getFromDate());
+                Date date = new SimpleDateFormat(ScsbConstants.ONGOING_MATCHING_DATE_FORMAT).parse(solrIndexRequest.getFromDate());
                 status = getOngoingMatchingAlgorithmUtil().fetchUpdatedRecordsAndStartProcess(getDateUtil().getFromDate(date), rows);
+            } else if (jobType.equalsIgnoreCase(ScsbCommonConstants.ONGOING_MATCHING_ALGORITHM_JOB) && matchBy.equalsIgnoreCase(ScsbConstants.BIB_ID_RANGE)) {
+                logger.info("From Bib Id : {}, To Bib Id : {}", solrIndexRequest.getFromBibId(), solrIndexRequest.getToBibId());
+                String fromBibId = solrIndexRequest.getFromBibId();
+                String toBibId = solrIndexRequest.getToBibId();
+                status = getOngoingMatchingAlgorithmUtil().fetchUpdatedRecordsByBibIdRangeAndStartProcess(fromBibId, toBibId, rows);
             } else if (jobType.equalsIgnoreCase(ScsbConstants.POPULATE_DATA_FOR_DATA_DUMP_JOB)) {
+                logger.info("From Date : {}", solrIndexRequest.getFromDate());
+                Date date = new SimpleDateFormat(ScsbConstants.ONGOING_MATCHING_DATE_FORMAT).parse(solrIndexRequest.getFromDate());
                 status = getMatchingBibInfoDetailService().populateMatchingBibInfo(getDateUtil().getFromDate(date), getDateUtil().getToDate(date));
             }
         } catch (Exception e) {

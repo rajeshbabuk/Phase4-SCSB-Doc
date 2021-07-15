@@ -36,4 +36,5 @@ public class SolrIndexRequest {
     private String startRequestId;
     private String endRequestId;
     private String fromDate;
+    private String matchBy;
 }

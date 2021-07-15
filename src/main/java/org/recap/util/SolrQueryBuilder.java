@@ -26,6 +26,7 @@ public class SolrQueryBuilder {
 
     private String and = " AND ";
     private String or = " OR ";
+    private String to = " TO ";
     private String coreParentFilterQuery = "{!parent which=\"ContentType:parent\"}";
     private String coreChildFilterQuery = "{!child of=\"ContentType:parent\"}";
 
@@ -636,6 +637,24 @@ public class SolrQueryBuilder {
         StringBuilder query = new StringBuilder();
         query.append("(").append(ScsbConstants.BIB_CREATED_DATE).append(":").append("[").append(date).append("]")
                 .append(or).append(ScsbConstants.BIB_LAST_UPDATED_DATE).append(":").append("[").append(date).append("]").append(")")
+                .append(and).append(ScsbCommonConstants.IS_DELETED_BIB).append(":").append(ScsbConstants.FALSE)
+                .append(and).append(ScsbConstants.BIB_CATALOGING_STATUS).append(":").append(ScsbCommonConstants.COMPLETE_STATUS);
+        query.append(and).append(coreParentFilterQuery).append(ScsbCommonConstants.COLLECTION_GROUP_DESIGNATION).append(":").append(ScsbCommonConstants.SHARED_CGD)
+                .append(and).append(coreParentFilterQuery).append(ScsbCommonConstants.IS_DELETED_ITEM).append(":").append(ScsbConstants.FALSE)
+                .append(and).append(coreParentFilterQuery).append(ScsbConstants.ITEM_CATALOGING_STATUS).append(":").append(ScsbCommonConstants.COMPLETE_STATUS);
+        return query.toString();
+    }
+
+    /**
+     * This query is used to Fetch bibs based on Bib Id Range.
+     *
+     * @param fromBibId the from Bib Id
+     * @param toBibId the to Bib Id
+     * @return the string
+     */
+    public String fetchBibsByBibIdRange(String fromBibId, String toBibId) {
+        StringBuilder query = new StringBuilder();
+        query.append(ScsbConstants.BIB_ID).append(":").append("[").append(fromBibId).append(to).append(toBibId).append("]")
                 .append(and).append(ScsbCommonConstants.IS_DELETED_BIB).append(":").append(ScsbConstants.FALSE)
                 .append(and).append(ScsbConstants.BIB_CATALOGING_STATUS).append(":").append(ScsbCommonConstants.COMPLETE_STATUS);
         query.append(and).append(coreParentFilterQuery).append(ScsbCommonConstants.COLLECTION_GROUP_DESIGNATION).append(":").append(ScsbCommonConstants.SHARED_CGD)

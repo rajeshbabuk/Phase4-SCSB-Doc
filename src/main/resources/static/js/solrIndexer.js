@@ -44,6 +44,10 @@ jQuery(document).ready(function ($) {
         format: "yyyy/mm/dd"
     });
 
+    $('#ongoingMatchFromDateId').datepicker({
+        format: "yyyy/mm/dd"
+    });
+
     $('#partialIndexFromDate').datetimepicker({
         format: "dd-mm-yyyy hh:ii"
     });
@@ -291,4 +295,12 @@ function getInstitutions(selectId) {
                $('#'+selectId).append('<option value="' + val + '">' + val+ '</option>');
              });
         });
+}
+function showOngoingMatchFromDate(){
+    $("#OngoingMatchFromDateView").show();
+    $("#OngoingMatchBibIdRangeView").hide();
+}
+function showOngoingMatchBibIdRange(){
+    $("#OngoingMatchFromDateView").hide();
+    $("#OngoingMatchBibIdRangeView").show();
 }

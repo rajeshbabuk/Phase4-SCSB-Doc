@@ -434,24 +434,56 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="fromDate" class="col-sm-4">Date From</label>
 
-                                                        <div class="col-sm-4">
-                                                            <input type="text" th:field="*{createdDate}"
-                                                                   class="form-control bfh-number"
-                                                                   id="fromDate"
-                                                                   placeholder="Date"/>
+                                                    <div class="form-group" style="padding-left: 40px;">
+                                                        <label for="ongoingMatchFromDate" accesskey="R" class="radio-inline report-hide-shadow" style="padding-right: 30px;" tabindex="0">
+                                                            <input type="radio" name="OngoingMatchFromDate"
+                                                                   id="ongoingMatchFromDate" value="FromDate"
+                                                                   onclick="showOngoingMatchFromDate()" th:field="*{matchBy}"/>
+                                                            Date From
+                                                        </label>
+                                                        <label for="ongoingMatchBibIdRange" accesskey="A" class="radio-inline report-hide-shadow" style="padding-right: 30px;" tabindex="0">
+                                                            <input type="radio" name="OngoingMatchBibIdRange"
+                                                                   id="ongoingMatchBibIdRange" value="BibIdRange"
+                                                                   onclick="showOngoingMatchBibIdRange()" th:field="*{matchBy}"/>
+                                                            Bib Id Range
+                                                        </label>
+                                                    </div>
+
+                                                    <div>
+                                                        <div id="OngoingMatchFromDateView" style="display:none">
+                                                            <div id="ongoingMatchFromDateDiv" style="margin-top: 30px;">
+                                                                <label>Date From</label>
+                                                                <input type="text" th:field="*{fromDate}"
+                                                                       class="form-control bfh-number"
+                                                                       id="ongoingMatchFromDateId"
+                                                                       placeholder="Date"/>
+                                                            </div>
+                                                            <div style="margin-top: 30px; padding-left: 200px;">
+                                                                <button class="btn btn-info active"
+                                                                        id="ongoingMatchFromDateSubmit"
+                                                                        type="submit"> Submit
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-sm-4"></label>
-                                                        <div class="col-sm-4">
-                                                            <button id="matchingAlgoJobButton" type="submit"
-                                                                    name="matchingAlgoJobButton"
-                                                                    class="btn btn-info active">Submit
-                                                            </button>
+                                                    <div>
+                                                        <div id="OngoingMatchBibIdRangeView" style="display:none">
+                                                            <div id="ongoingMatchBibIdRangeFromDiv" style="margin-top: 30px;">
+                                                                <label>Bib Id From</label>
+                                                                <input class="form-control" type="text" id="OngoingMatchBibIdRangeFrom" th:field="*{fromBibId}"/>
+                                                            </div>
+                                                            <div id="ongoingMatchBibIdRangeToDiv" style="margin-top: 30px;">
+                                                                <label>Bib Id To</label>
+                                                                <input class="form-control" type="text" id="OngoingMatchBibIdRangeTo" th:field="*{toBibId}"/>
+                                                            </div>
+                                                            <div style="margin-top: 30px; padding-left: 200px;">
+                                                                <button class="btn btn-info active"
+                                                                        id="ongoingMatchBibIdRangeSubmit"
+                                                                        type="submit"> Submit
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </fieldset>

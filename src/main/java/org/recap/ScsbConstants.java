@@ -126,6 +126,7 @@ public final class ScsbConstants {
     public static final String BIB_ID_LIST = "BibIdList";
     public static final String BIB_ID_RANGE = "BibIdRange";
     public static final String DATE_RANGE = "DateRange";
+    public static final String FROM_DATE = "FromDate";
     public static final String BIB_ID_RANGE_FROM = "BibIdRangeFrom";
     public static final String BIB_ID_RANGE_TO = "BibIdRangeTo";
     public static final String DATE_RANGE_FROM = "DateRangeFrom";
@@ -200,6 +201,7 @@ public final class ScsbConstants {
     public static final String DOC_TYPE_ITEM = "DocType:Item";
     public static final String ITEM_STATUS_INCOMPLETE = "ItemCatalogingStatus:Incomplete";
     public static final String IS_DELETED_ITEM_FALSE = "IsDeletedItem:false";
+    public static final String BIB_ID = "BibId";
     public static final String ITEM_BIB_ID = "ItemBibId";
     public static final String AUTHOR_DISPLAY = "Author_display";
 
@@ -297,6 +299,9 @@ public final class ScsbConstants {
     public static final String EMAIL_HEADER_CC = "${header.emailPayLoad.cc}";
     public static final String MATCHING_REPORT_FILE_NAME_CAMEL_HEADER = "${in.header.fileName}-${date:now:ddMMMyyyyHHmmss}.csv";
     public static final String MATCHING_ALGORITHM_UPDATE_CGD_MESSAGE = "updateCGDBasedOnMaterialTypes, Match type is Single Match, TileException Found";
+
+    public static final String ONGOING_MATCHING_DATE_FORMAT = "yyyy/MM/dd";
+    public static final String CURRENT_PAGE = "Current Page";
 
     private ScsbConstants(){}
 }
