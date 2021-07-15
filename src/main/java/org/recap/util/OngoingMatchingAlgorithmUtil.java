@@ -140,7 +140,7 @@ public class OngoingMatchingAlgorithmUtil {
         status = processOngoingMatchingAlgorithm(solrDocumentList, serialMvmBibIds);
 
         for(int pageNum=1; pageNum<totalPages; pageNum++) {
-            logger.info("{} : {}/{} ", ScsbConstants.CURRENT_PAGE, 1, totalPages);
+            logger.info("{} : {}/{} ", ScsbConstants.CURRENT_PAGE, pageNum+1, totalPages);
             start = pageNum * rows;
             queryResponse = fetchDataForOngoingMatchingBasedOnDate(formattedDate, rows, start);
             solrDocumentList = queryResponse.getResults();
@@ -188,7 +188,7 @@ public class OngoingMatchingAlgorithmUtil {
         status = processOngoingMatchingAlgorithm(solrDocumentList, serialMvmBibIds);
 
         for(int pageNum=1; pageNum<totalPages; pageNum++) {
-            logger.info("{} : {}/{} ", ScsbConstants.CURRENT_PAGE, 1, totalPages);
+            logger.info("{} : {}/{} ", ScsbConstants.CURRENT_PAGE, pageNum+1, totalPages);
             start = pageNum * rows;
             queryResponse = fetchDataForOngoingMatchingBasedOnBibIdRange(fromBibId, toBibId, rows, start);
             solrDocumentList = queryResponse.getResults();
@@ -283,13 +283,13 @@ public class OngoingMatchingAlgorithmUtil {
         String status = ScsbCommonConstants.SUCCESS;
         Map<Integer, BibItem> bibItemMap = new HashMap<>();
         List<Integer> itemIds = new ArrayList<>();
-        logger.info("Current Bib Id : {}", solrDocument.getFieldValue(ScsbConstants.BIB_ID));
+        int bibId = (Integer) solrDocument.getFieldValue(ScsbConstants.BIB_ID);
         Set<String> matchPointString = getMatchingBibsAndMatchPoints(solrDocument, bibItemMap);
 
         if(bibItemMap.size() > 0) {
             if(matchPointString.size() > 1) {
                 // Multi Match
-                logger.info("Multi Match Found.");
+                logger.info("Multi Match Found for Bib Id: {}", bibId);
                 try {
                     itemIds = saveReportAndUpdateCGDForMultiMatch(bibItemMap, serialMvmBibIds);
                 } catch (IOException | SolrServerException e) {
@@ -298,7 +298,7 @@ public class OngoingMatchingAlgorithmUtil {
                 }
             } else if(matchPointString.size() == 1) {
                 // Single Match
-                logger.info("Single Match Found.");
+                logger.info("Single Match Found for Bib Id: {}", bibId);
                 try {
                     if(checkIfReportForSingleMatchExists(solrDocument, bibItemMap, matchPointString)){
                         itemIds = saveReportAndUpdateCGDForSingleMatch(bibItemMap, matchPointString.iterator().next(), serialMvmBibIds);
@@ -307,8 +307,6 @@ public class OngoingMatchingAlgorithmUtil {
                     logger.error(ScsbCommonConstants.LOG_ERROR,e);
                     status = ScsbCommonConstants.FAILURE;
                 }
-            } else {
-                logger.info("No Match Found.");
             }
 
             if(CollectionUtils.isNotEmpty(itemIds)) {
